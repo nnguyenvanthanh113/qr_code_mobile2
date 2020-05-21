@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:qrcodemobile2/dialog/rich_dialog.dart';
 import 'package:qrcodemobile2/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,12 +52,12 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 15, 0, 6),
                 child: Text(
-                  "Welcome back!",
+                  "Quét Mã QR",
                   style: TextStyle(fontSize: 22, color: Color(0xff333333)),
                 ),
               ),
               Text(
-                "Login to continue using Kintone",
+                "App dành cho Tài Xế ",
                 style: TextStyle(fontSize: 16, color: Colors.red),
               ),
               Padding(
@@ -69,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         errorText:
                         snapshot.hasError ? snapshot.error : null,
-                        labelText: "Email",
+                        labelText: "Mã tài xế",
                           prefixIcon: Container(
                               width: 50, child: Image.asset("ic_mail.png")),
                           border: OutlineInputBorder(
@@ -85,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _passController,
                     style: TextStyle(fontSize: 18, color: Colors.black),
                     decoration: InputDecoration(
-                        labelText: "Password",
+                        labelText: "Mật khẩu",
                         errorText:
                         snapshot.hasError ? snapshot.error : null,
                         prefixIcon: Container(
@@ -122,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 10, 1),
                   child: Text(
-                    "Forgot password?",
+                    "Quên mật khẩu ?",
                     style: TextStyle(fontSize: 16, color: Color(0xff606470)),
                   ),
                 ),
@@ -135,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: RaisedButton(
                     onPressed: _onloginClick,
                     child: Text(
-                      "Log in",
+                      "ĐĂNG NHẬP",
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                     color: Colors.lightBlueAccent,
@@ -157,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
         _passController.text);
     if(isValid == true)
       {
-        LoadingDialog.showLoadingDialog(context, "Loading....");
+        LoadingDialog.showLoadingDialog(context, "Đang tải....");
         //CheckLogin();
         _CheckCodeApp();
 
@@ -195,14 +196,16 @@ class _LoginPageState extends State<LoginPage> {
         else
           {
             LoadingDialog.hideLoadingDialog(context);
-            MsgDialog.showMsgDialog(context, "Sign-In","Code app không đúng");
+            //MsgDialog.showMsgDialog(context, "Đăng nhập","Code app không đúng");
+            RichDialog.ErrorDialog(context, "Đăng nhập","Code app không đúng");
 
           }
       }
       else
       {
         LoadingDialog.hideLoadingDialog(context);
-        MsgDialog.showMsgDialog(context, "Sign-In","Code app không đúng");
+        //MsgDialog.showMsgDialog(context, "Đăng nhập","Code app không đúng");
+        RichDialog.ErrorDialog(context, "Đăng nhập","Code app không đúng");
 
       }
     });
@@ -235,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
               if(data.length > 0)
                 {
                   LoadingDialog.hideLoadingDialog(context);
-                  print("thanh cong !");
+                  print("thành công !");
 
                   //luu email, pass, code_app  vao SharedPreferences
                       final prefsEmail = await SharedPreferences.getInstance(); //email
@@ -262,16 +265,18 @@ class _LoginPageState extends State<LoginPage> {
               if(data.length <= 0 )
                 {
                   LoadingDialog.hideLoadingDialog(context);
-                  MsgDialog.showMsgDialog(context, "Sign-In","Kiểm tra lại User và Password");
+                  //MsgDialog.showMsgDialog(context, "Đăng nhập","Kiểm tra lại Mã tài xế  và Mật khẩu");
+                  RichDialog.ErrorDialog(context, "Đăng nhập","Kiểm tra lại Mã tài xế  và Mật khẩu");
                   //MsgDialog.showMsgDialog(context, "Sign-In Error",response.body);
 
-                  print("khong thanh cong !");
+                  print("không thành công !");
                 }
 
             }
             else
             {
-                MsgDialog.showMsgDialog(context, "Sign-In","ERROR");
+                //MsgDialog.showMsgDialog(context, "Lỗi đăng nhập ","!");
+                RichDialog.ErrorDialog(context, "Đăng nhập","Kiểm tra lại Mã tài xế  và Mật khẩu");
                 LoadingDialog.hideLoadingDialog(context);
             }
     });

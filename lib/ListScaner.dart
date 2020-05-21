@@ -4,6 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:qrcodemobile2/dialog/rich_dialog.dart';
 import 'package:qrcodemobile2/model/ListQR.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -29,7 +30,7 @@ class _ListScanerState extends State<ListScaner> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Todos'),
+        title: Text('Danh sách đã lưu'),
       ),
       body: getTodoListView(),
       floatingActionButton: FloatingActionButton(
@@ -50,7 +51,8 @@ class _ListScanerState extends State<ListScaner> {
     var result = await Connectivity().checkConnectivity();
     if (result == ConnectivityResult.none)
       {
-        MsgDialog.showMsgDialog(context, "Chưa kết nối Internet!","");
+        //MsgDialog.showMsgDialog(context, "Chưa kết nối Internet!","");
+        RichDialog.WarningDialog(context, "Chưa kết nối Internet!","");
       }
     else if(result == ConnectivityResult.mobile || result == ConnectivityResult.wifi)
       {
@@ -75,7 +77,7 @@ class _ListScanerState extends State<ListScaner> {
 
         if(todoList.length != 0)
         {
-          LoadingDialog.showLoadingDialog(context, "Loading....");
+          LoadingDialog.showLoadingDialog(context, "Đang tải....");
           //List<ListQR> list;
           for(int i=0; i<todoList.length;i++)
           {
@@ -151,7 +153,8 @@ class _ListScanerState extends State<ListScaner> {
   void _delete(BuildContext context, ListQR todo) async {
     int result = await databaseHelper.deleteTodo(todo.id);
     if (result != 0) {
-      MsgDialog.showMsgDialog(context, "QR Deleted Successfully !","");
+      //MsgDialog.showMsgDialog(context, "Đã xóa !","");
+      RichDialog.SuccesDialog(context, "Đã xóa !","");
       updateListView();
     }
   }

@@ -15,7 +15,7 @@ class AuthBloc{
 
   bool isValid(String email, String pass) {
     if (email == null || email.length == 0) {
-      _emailController.sink.addError("Nhập email");
+      _emailController.sink.addError("Nhập mã tài xế");
       return false;
     }
     _emailController.sink.add("");

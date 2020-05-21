@@ -14,7 +14,7 @@ class MsgDialog {
             onPressed: () {
               Navigator.of(context).pop(MsgDialog);
             },
-          ),
+          )
         ],
       ),
     );

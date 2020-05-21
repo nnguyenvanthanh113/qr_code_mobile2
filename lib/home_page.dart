@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -13,6 +14,7 @@ import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner/qr_scanner_overlay_shape.dart';
+import 'package:qrcodemobile2/dialog/rich_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'ListScaner.dart';
@@ -103,7 +105,7 @@ class _MyHomeState extends State<MyHome> {
       ),
       Expanded(
         flex: 1,
-        child: Center(child: Text("Scaner result :$qrText"),),
+        child: Center(child: Text("$qrText"),),
       ),
       Padding(
         padding: const EdgeInsets.all(8.0),
@@ -123,12 +125,6 @@ class _MyHomeState extends State<MyHome> {
     ],)
 
       ,);
-  }
-  _addTamThoi() async {
-    todo = new ListQR('IVS-0633', '2020-05-13', '16:22');
-    //listqr.add(new ListQR('IVS-0033', 'May 20,2020', '14:10'));
-    int result = await helper.insertTodo(todo);
-    print("result" + result.toString());
   }
 
   @override
@@ -150,14 +146,6 @@ class _MyHomeState extends State<MyHome> {
                 checkQR = qrText;
 
                 _checkInternetConnectivity();
-
-//                //lay ten NV ứng với mã qr
-//                GetStaffName(checkQR);
-//
-//                //post data lên kintone
-//                makePostRequest();
-//                print("da co data");
-
 
               }
             else
@@ -195,7 +183,7 @@ class _MyHomeState extends State<MyHome> {
       int result;
 
         result = await helper.insertTodo(todo);
-        print("result da insert :" + result.toString());
+        print("số row đã thêm vào sqlLite :" + result.toString());
 
       listqr = await helper.getTodoList();
       for(int i = 0; i < listqr.length;i++)
@@ -207,9 +195,11 @@ class _MyHomeState extends State<MyHome> {
 
 
       if (result != 0) {  // Success
-        MsgDialog.showMsgDialog(context, "No Internet !","Saved Successfully....");
+        //MsgDialog.showMsgDialog(context, "Không có kết nối Internet !","Đã lưu tạm thời....");
+        RichDialog.WarningDialog(context, "Không có kết nối Internet !","Đã lưu tạm thời....");
       } else {  // Failure
-        MsgDialog.showMsgDialog(context, "Problem Saved....","");
+        //MsgDialog.showMsgDialog(context, "Không lưu được tạm thời....","");
+        RichDialog.ErrorDialog(context, "Không lưu được tạm thời....","");
       }
 
     }
@@ -219,9 +209,12 @@ class _MyHomeState extends State<MyHome> {
       //lay ten NV ứng với mã qr
       GetStaffName(checkQR);
 
-      //post data lên kintone
-      makePostRequest();
-      print("da co data");
+
+      Timer(Duration(seconds: 1), () {
+        //post data lên kintone
+        makePostRequest();
+      });
+
     }
 
   }
@@ -297,7 +290,7 @@ class _MyHomeState extends State<MyHome> {
     print("URL : " + json);
     print(qrText);
 
-    LoadingDialog.showLoadingDialog(context, "Loading....");
+    LoadingDialog.showLoadingDialog(context, "Đang tải....");
     Response response = await post(url, headers: headers, body: json);
     // check the status code for the result
     int statusCode = response.statusCode;
@@ -318,8 +311,8 @@ class _MyHomeState extends State<MyHome> {
         audioPlugin.play(mp3Uri1, isLocal: true);
 
         //hien Dialog
-
-        MsgDialog.showMsgDialog(context, "gởi thành công !",'$Code_app : $StaffName');
+        //MsgDialog.showMsgDialog(context, "gởi thành công !",'$qrText : $StaffName');
+        RichDialog.SuccesDialog(context, "gởi thành công !",'$qrText : $StaffName');
         //showNotification;
       }
     else
@@ -332,7 +325,8 @@ class _MyHomeState extends State<MyHome> {
         audioPlugin.play(mp3Uri2, isLocal: true);
 
         //hien Dialog
-        MsgDialog.showMsgDialog(context, "gởi thất bại !","...");
+        //MsgDialog.showMsgDialog(context, "gởi thất bại !","...");
+        RichDialog.ErrorDialog(context, "gởi thất bại !","...");
       }
 
   }
